@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+    <!--配置注解驱动 用来处理json数据 静态资源访问问题-->
+    <mvc:annotation-driven/>
+    <!--声明组件扫描器-->
+    <context:component-scan base-package="com.hrz.crm.settings.web.controller"/>
+    <context:component-scan base-package="com.hrz.crm.workbench.web.controller"/>
+    <context:component-scan base-package="com.hrz.crm.settings.web.handler"/>
+    <!--配置视图解析器-->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>-->
+    <mvc:default-servlet-handler/>
+    <!--注册拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.hrz.crm.settings.web.interceptor.MyInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>
