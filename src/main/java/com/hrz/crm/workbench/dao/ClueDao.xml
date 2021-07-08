@@ -51,7 +51,7 @@
 
     </insert>
 
-    <select id="getCountByCondition">
+    <select id="getCountByCondition" resultType="int">
         select count(*)
         from tbl_clue c
         join tbl_user u
@@ -76,7 +76,7 @@
         </where>
     </select>
     <select id="doPageList" resultType="Clue">
-        select fullname,appellation,owner as u.name,company,mphone,phone,source,state
+        select fullname,appellation,u.name as `owner`,company,mphone,phone,source,state
         from tbl_clue c
         join tbl_user u
         on c.owner=u.id
@@ -98,7 +98,7 @@
                 and state like '%' #{state} '%'
             </if>
         </where>
-        order by a.createTime desc
+        order by c.createTime desc
         limit #{skipCount},#{pageSize}
     </select>
 </mapper>
