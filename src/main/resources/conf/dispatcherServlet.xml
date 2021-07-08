@@ -17,11 +17,11 @@
     </bean>-->
     <mvc:default-servlet-handler/>
     <!--注册拦截器-->
-    <mvc:interceptors>
+    <!--<mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/user/**"/>
             <mvc:mapping path="/activity/**"/>
             <bean class="com.hrz.crm.settings.web.interceptor.MyInterceptor"/>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 </beans>
