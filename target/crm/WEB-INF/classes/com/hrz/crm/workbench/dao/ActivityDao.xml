@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrz.crm.workbench.dao.ActivityDao">
+
+    <select id="getActivityByClueId" resultType="com.hrz.crm.workbench.entity.Activity">
+        select a.name,a.startDate,a.endDate,u.name as owner,car.id as id
+        from tbl_activity a
+                 join tbl_clue_activity_relation car
+                      on a.id=car.activityId
+                 join tbl_user u
+                      on a.owner=u.id
+        where car.clueId=#{id}
+    </select>
+
+
+    <select id="getActivityListByNameAndNotInClueId" resultType="Activity">
+        select a.id,a.name,a.startDate,a.endDate,u.name as owner
+        from tbl_activity a join tbl_user u on a.owner=u.id
+        where a.name like '%' #{aname} '%'
+        and a.id not in (
+            select activityId from tbl_clue_activity_relation where clueId=#{clueId}
+            )
+    </select>
+    <insert id="save">
+        insert into tbl_activity (
+            id,
+            owner,
+            name,
+            startDate,
+            endDate,
+            cost,
+            description,
+            createTime,
+            createBy,
+            editTime,
+            editBy
+        )
+        values (
+                   #{id},
+                   #{owner},
+                   #{name},
+                   #{startDate},
+                   #{endDate},
+                   #{cost},
+                   #{description},
+                   #{createTime},
+                   #{createBy},
+                   #{editTime},
+                   #{editBy}
+               )
+    </insert>
+
+
+    <select id="getDataListByCondition" resultType="Activity">
+        select
+            a.id,
+            a.name,
+            n.name as owner,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user n
+        on a.owner = n.id
+        <where>
+            '1'='1'
+            <if test="name != null and name != ''">
+                and a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and n.name like '%' #{owner} '%'
+            </if>
+            <if test="startData != null and startData != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endData != null and endData != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc
+        /*  int int 类型 记住 ~~~~！！！！*/
+        limit #{skipCount},#{pageSize}
+    </select>
+
+    <select id="getTotalByCondition" resultType="int">
+        select count(*)
+        from tbl_activity a
+        join tbl_user n
+        on a.owner = n.id
+        <where>
+            '1'='1'
+            <if test="name != null and name != ''">
+                and a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and n.name like '%' #{owner} '%'
+            </if>
+            <if test="startData != null and startData != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endData != null and endData != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <delete id="doDelete">
+        delete
+        from tbl_activity
+        where id in
+        <foreach collection="array" separator="," open="(" close=")" item="aid">
+            #{aid}
+        </foreach>
+    </delete>
+
+    <select id="selectActivityById" resultType="Activity">
+        select n.name as owner
+             ,a.name
+             ,a.startDate
+             ,a.endDate
+             ,a.cost
+             ,a.description
+             ,a.createTime
+             ,a.createBy
+             ,a.editTime
+             ,a.editBy
+        from tbl_activity a
+        join tbl_user n
+        on a.owner = n.id and a.id = #{id}
+    </select>
+
+    <update id="doEdit" parameterType="Activity">
+        update tbl_activity
+        set
+            owner=#{owner}
+          ,name=#{name}
+          ,startDate=#{startDate}
+          ,endDate=#{endDate}
+          ,cost=#{cost}
+          ,description=#{description}
+        where id=#{id}
+    </update>
+</mapper>

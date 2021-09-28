@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrz.crm.workbench.dao.ActivityRemarkDao">
+    <select id="getCountByIds" resultType="int">
+        select count(*) from tbl_activity_remark where activityId in
+
+        <foreach open="(" close=")" separator="," collection="array" item="aid">
+                #{aid}
+        </foreach>
+    </select>
+    <delete id="doDelete">
+        delete
+        from tbl_activity_remark
+        where activityId in
+        <foreach open="(" close=")" separator="," collection="array" item="aid">
+            #{aid}
+        </foreach>
+    </delete>
+
+    <select id="selectActivityRemarkById" resultType="ActivityRemark">
+        select
+             r.id
+            ,r.noteContent
+            ,r.createTime
+            ,r.createBy
+            ,r.editTime
+            ,r.editBy
+            ,r.editFlag
+            ,r.activityId
+        from tbl_activity_remark r
+        join tbl_activity a
+        on a.id = r.activityId and r.activityId=#{id}
+    </select>
+
+    <insert id="doSaveRemark">
+        insert into tbl_activity_remark (
+                id
+            ,noteContent
+            ,createTime
+            ,createBy
+            ,editTime
+            ,editBy
+            ,editFlag
+            ,activityId
+
+        )
+        values (
+                   #{id},
+                   #{noteContent},
+                   #{createTime},
+                   #{createBy},
+                   #{editTime},
+                   #{editBy},
+                   #{editFlag},
+                   #{activityId}
+               )
+    </insert>
+</mapper>
